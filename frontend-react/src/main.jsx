@@ -1,0 +1,16 @@
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter, Routes, Route, Link, useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
+// Shared API client pointing to Spring Boot backend.
+const api = axios.create({ baseURL: 'http://localhost:8080/api' });
+// Participant login and localStorage session persistence.
+function Login(){ const nav=useNavigate(); const [email,setEmail]=React.useState(''); const [password,setPassword]=React.useState(''); const [err,setErr]=React.useState(''); return <div><h1>Login</h1><input placeholder='email' value={email} onChange={e=>setEmail(e.target.value)} /><input placeholder='password' type='password' value={password} onChange={e=>setPassword(e.target.value)} /><button onClick={async()=>{try{const r=await api.post('/auth/login',{email,password}); localStorage.setItem('user',JSON.stringify(r.data)); nav('/events');}catch{setErr('Erro');}}}>Entrar</button><p>{err}</p></div>; }
+function Register(){ const nav=useNavigate(); const [f,setF]=React.useState({name:'',email:'',password:''}); return <div><h1>Cadastro</h1><input placeholder='name' onChange={e=>setF({...f,name:e.target.value})}/><input placeholder='email' onChange={e=>setF({...f,email:e.target.value})}/><input placeholder='password' onChange={e=>setF({...f,password:e.target.value})}/><button onClick={async()=>{await api.post('/users',f); nav('/login');}}>Cadastrar</button></div>; }
+// Public list of academic events.
+function Events(){ const [events,setEvents]=React.useState([]); React.useEffect(()=>{api.get('/events').then(r=>setEvents(r.data));},[]); return <div><h1>Eventos</h1>{events.map(e=><div key={e.id}><p>{e.title} - {e.date} - {e.location} - {e.capacity}</p><Link to={`/events/${e.id}`}>Ver detalhes</Link></div>)}</div>; }
+// Event details with registration action.
+function EventDetails(){ const {id}=useParams(); const [e,setE]=React.useState(); const [msg,setMsg]=React.useState(''); React.useEffect(()=>{api.get(`/events/${id}`).then(r=>setE(r.data));},[id]); if(!e)return <p>Carregando...</p>; return <div><h1>{e.title}</h1><p>{e.description}</p><button onClick={async()=>{try{const u=JSON.parse(localStorage.getItem('user'));await api.post(`/events/${id}/registrations`,{userId:u.id});setMsg('Inscricao realizada');}catch{setMsg('Falha na inscricao');}}}>Inscrever-se</button><p>{msg}</p></div>; }
+function MyRegs(){ const [regs,setRegs]=React.useState([]); React.useEffect(()=>{const u=JSON.parse(localStorage.getItem('user')); if(u){api.get(`/users/${u.id}/registrations`).then(r=>setRegs(r.data));}},[]); return <div><h1>Minhas inscricoes</h1>{regs.map(r=><p key={r.id}>{r.event.title}</p>)}</div>; }
+function App(){ return <BrowserRouter><nav><Link to='/login'>Login</Link> | <Link to='/register'>Cadastro</Link> | <Link to='/events'>Eventos</Link> | <Link to='/my-registrations'>Minhas inscricoes</Link></nav><Routes><Route path='/login' element={<Login/>}/><Route path='/register' element={<Register/>}/><Route path='/events' element={<Events/>}/><Route path='/events/:id' element={<EventDetails/>}/><Route path='/my-registrations' element={<MyRegs/>}/><Route path='*' element={<Login/>}/></Routes></BrowserRouter>; }
+createRoot(document.getElementById('root')).render(<App/>);

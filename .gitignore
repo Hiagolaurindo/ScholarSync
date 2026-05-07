@@ -1,0 +1,40 @@
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Env files
+.env
+.env.*
+
+# Java / Maven
+backend-java/target/
+backend-java/.mvn/
+*.class
+
+# Node / JS (all apps)
+**/node_modules/
+**/dist/
+**/coverage/
+**/.angular/
+**/.vite/
+
+# Angular cache
+admin-angular/.angular/
+
+# Playwright outputs
+e2e/test-results/
+e2e/playwright-report/
+
+# Misc build artifacts
+tmp/
+.temp/
