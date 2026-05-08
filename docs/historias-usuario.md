@@ -42,7 +42,7 @@ Quando tentar criar uma nova conta
 Entao o sistema deve informar que o email ja existe  
 
 
-## HU-003 Consulta de eventos
+## HU-003 consulta de eventos
 
 ### Descricao
 Como participante, quero visualizar os eventos disponiveis para realizar inscricoes.
@@ -65,7 +65,7 @@ Entao o sistema deve informar que nao ha eventos disponiveis
 
 ## HU-004 Cadastro de evento
 
-### Descricao
+### Descrição
 Como administrador, quero cadastrar eventos para disponibiliza-los aos participantes.
 
 ### Criterios de aceitacao
