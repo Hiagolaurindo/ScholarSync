@@ -38,3 +38,5 @@ e2e/playwright-report/
 # Misc build artifacts
 tmp/
 .temp/
+
+spec.md
